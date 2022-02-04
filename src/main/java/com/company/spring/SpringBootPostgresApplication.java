@@ -8,6 +8,7 @@ public class SpringBootPostgresApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SpringBootPostgresApplication.class, args);
+        System.out.println("==== STARTED ====");
     }
 
 }
