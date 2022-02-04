@@ -17,8 +17,24 @@ public class StudentController {
         return studentService.getStudents();
     }
 
+    @GetMapping("/{id}")
+    public Student getStudent(@PathVariable Long id) {
+        return studentService.getStudent(id);
+    }
+
     @PostMapping
     public Student addStudent(@RequestBody Student student) {
         return studentService.addStudent(student);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
+    }
+
+    @PutMapping("/{id}")
+    public Student updateStudent(@PathVariable Long id, @RequestParam(required = false) String name,
+                                 @RequestParam(required = false) String email) {
+        return studentService.updateStudent(id, name, email);
     }
 }
