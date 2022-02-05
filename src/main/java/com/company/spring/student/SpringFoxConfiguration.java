@@ -17,14 +17,10 @@ import java.util.Collections;
 @EnableSwagger2
 public class SpringFoxConfiguration {
 
-    @Value("${swagger.host.url}")
-    private String HOST_URL;
-
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
-                .host(HOST_URL)
                 .groupName("Spring Actuator")
                 .select()
                 .apis(RequestHandlerSelectors.any())
