@@ -1,5 +1,7 @@
 package com.company.spring.student;
 
+import com.company.spring.exceptions.ApiConflictException;
+import com.company.spring.exceptions.ApiNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,14 +22,16 @@ public class StudentService {
     }
 
     public Student getStudent(Long id) {
-        return studentRepository.findById(id).orElse(null);
+        //Check if student exists
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new ApiNotFoundException("Student with id " + id + " does not exist"));
     }
 
     public Student addStudent(Student student) {
         //Check if email is unique
         studentRepository.findStudentByEmail(student.getEmail()).ifPresent(s -> {
             log.error("Student with email {} already exists", student.getEmail());
-            throw new IllegalArgumentException("Student with email " + student.getEmail() + " already exists");
+            throw new ApiConflictException("Student with email " + student.getEmail() + " already exists");
         });
 
         log.info("Adding student: {}", student);
@@ -39,14 +43,14 @@ public class StudentService {
         //Check if student exists
         Student student = studentRepository.findById(id).orElseThrow(() -> {
             log.error("Student with id {} does not exist", id);
-            return new IllegalArgumentException("Student with id " + id + " does not exist");
+            return new ApiNotFoundException("Student with id " + id + " does not exist");
         });
 
         //Check if email is unique
         Optional<Student> studentByEmail = studentRepository.findStudentByEmail(email);
         if (studentByEmail.isPresent() && !studentByEmail.get().getId().equals(id)) {
             log.error("Student with email {} already exists", email);
-            throw new IllegalArgumentException("Student with email " + email + " already exists");
+            throw new ApiConflictException("Student with email " + email + " already exists");
         }
 
         //Check if name not null or empty
@@ -66,7 +70,7 @@ public class StudentService {
         //Check if student exists
         if (!studentRepository.existsById(id)) {
             log.error("Student with id {} does not exist", id);
-            throw new IllegalArgumentException("Student with id " + id + " does not exist");
+            throw new ApiNotFoundException("Student with id " + id + " does not exist");
         }
         log.info("Deleting student with id: {}", id);
         studentRepository.deleteById(id);
